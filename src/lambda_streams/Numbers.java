@@ -144,7 +144,7 @@ class Numbers {
     lambdaCompare.process(nums);
     System.out.println(lambdaAppend.process(986));
 
-}
+
 
 interface Processor <T, R>{
     R process(T arg);
@@ -192,7 +192,7 @@ interface Processor <T, R>{
         return remainder;
     }
 
-    static BigInteger multipled(List<Integer> numbers) {
+    static BigInteger multiplied(List<Integer> numbers) {
         //multiply all the elements in the list. and return the product.
         BigInteger product = BigInteger.valueOf(numbers.get(0));
         for (int i = 1; i<numbers.size(); i++) {
@@ -253,3 +253,4 @@ interface Processor <T, R>{
     }
 
 }
+
