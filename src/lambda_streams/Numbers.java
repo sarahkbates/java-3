@@ -1,91 +1,236 @@
 package lambda_streams;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static java.lang.Math.sqrt;
 
 class Numbers {
     static List<Integer> nums = Arrays.asList(10,100,1000,5,50,500,3,30,300,7,70,700,1,10,100,25,250,2500);
 
     public static void main(String[] args) {
-        //Part I :complete the static class methods that have been set up in this Numbers class java file.  Use streams to compute the results wheever possible.
+        //Part I :complete the static class methods that have been set up in this Numbers class java file.  Use streams to compute the results wherever possible.
         System.out.println(nums);
+        System.out.println(isOdd(5));
+        System.out.println(isEven(16));
+        System.out.println(isPrime(7));
+        System.out.println(added(nums));
+        System.out.println(subtracted(nums));
+        System.out.println(multiplied(nums));
+        System.out.println(divided(nums));
+        System.out.println(findMax(nums));
+        System.out.println(findMin(nums));
+        compare(nums);
+        System.out.println(change(1769));
 
-        //Part II - refactor all of the class methods to accept lambda expressions. You can put the lambda functions directly inside the method calls, or defined them first, then pass them into the methods. give them the same names as the static methods, but add the word 'lambda' in front of every lambda function:
+        //Part II - refactor all of the class methods to accept lambda expressions. You can put the lambda functions directly inside the method calls, or define them first, then pass them into the methods. give them the same names as the static methods, but add the word 'lambda' in front of every lambda function:
         /* e.g.
-
         added(() -> {});
-
         OR
-
         lambdaAdd = () -> {};
         added(lambdaAdd);
-
         isOdd(() -> {});
-
         OR
-
         lambdaOdd = () -> {};
         isOdd(lambdaOdd);
         etc...
-
         */
 
+        LambdaInterface<Integer, Boolean> lambdaIsOdd = (Integer i) -> i % 2 != 0;
+        LambdaInterface<Integer, Boolean> lambdaIsEven = (Integer i) -> i % 2 == 0;
+        LambdaInterface<Integer, Boolean> lambdaIsPrime = (Integer i) -> {
+            boolean result = true;
+            for (int x = 2; x<=sqrt(i); x++) {
+                if ((i % x) == 0) {
+                    result = false;
+                    break;
+                } else {
+                    x++;
+                }
+            }
+            return result;
+        };
+        LambdaInterface<List<Integer>, Integer> lambdaAdded = (numbers) -> {
+            int sum = 0;
+            for(int i: numbers){
+                sum += i;
+            }
+            return sum;
+        };
+        LambdaInterface<List<Integer>, Integer> lambdaSubtracted = (numbers) -> {
+            int remainder = numbers.get(0);
+            for(int i = 1; i<numbers.size(); i++) {
+                remainder -= numbers.get(i);
+            }
+            return remainder;
+        };
+        LambdaInterface<List<Integer>, BigInteger> lambdaMultiplied = (numbers) -> {
+            BigInteger product = BigInteger.valueOf(numbers.get(0));
+            for (int i = 1; i<numbers.size(); i++) {
+                product= product.multiply(BigInteger.valueOf(numbers.get(i)));
+            }
+            return product;
+        };
+        LambdaInterface<List<Integer>, Double> lambdaDivided = (numbers) -> {
+            double product = numbers.get(0);
+            for (int i = 1; i<numbers.size(); i++) {
+                product /= numbers.get(i);
+            }
+            return product;
+        };
+        LambdaInterface<List<Integer>, Integer> lambdaFindMax = (numbers) -> {
+            int maxValue = Integer.MIN_VALUE;
+            for(int i: numbers) {
+                if(maxValue < i) {
+                    maxValue = i;
+                }
+            }
+            return maxValue;
+        };
+        LambdaInterface<List<Integer>, Integer> lambdaFindMin = (numbers) -> {
+            int minValue = Integer.MAX_VALUE;
+            for(int i: numbers) {
+                if (minValue > i) {
+                    minValue = i;
+                }
+            }
+            return minValue;
+        };
+        LambdaInterface<List<Integer>, Integer> lambdaCompare = (numbers) -> {
+            int j = 1;
+            int compareValue = 0;
+            for(int i=0; i<numbers.size()-1; i++) {
+                compareValue = Integer.compare(numbers.get(i), numbers.get(j));
+                System.out.println(numbers.get(i) + " compared to " + numbers.get(j) + ": " + compareValue);
+                j++;
+            }
+            return compareValue;
+        };
+        LambdaInterface<Integer, Integer> lambdaAppend = (n) -> {
+            ArrayList<Integer> newNums = new ArrayList<Integer>(nums);
+            newNums.add(n);
+            return n;
+        };
+        System.out.println(lambdaIsOdd.process(32));
+        System.out.println(lambdaIsEven.process(32));
+        System.out.println(lambdaIsPrime.process(18));
+        System.out.println(lambdaAdded.process(nums));
+        System.out.println(lambdaSubtracted.process(nums));
+        System.out.println(lambdaMultiplied.process(nums));
+        System.out.println(lambdaDivided.process(nums));
+        System.out.println(lambdaFindMax.process(nums));
+        System.out.println(lambdaFindMin.process(nums));
+        lambdaCompare.process(nums);
+        System.out.println(lambdaAppend.process(764));
+
+    }
+
+    interface LambdaInterface<T, R> {
+        R process(T arg);
     }
 
     static boolean isOdd(int i) {
         //determine if the value at the index i is odd.  return true if yes, return false if  no.
-        return false;
+        return i % 2 != 0;
     }
 
     static boolean isEven(int i) {
         //determine if the value at the index i is even.  return true if yes, return false if  no.
-        return false;
+        return i % 2 == 0;
     }
 
     static boolean isPrime(int i) {
          //determine if the value at the index i is a prime number.  return true if yes, return false if no.
-         return false;
+        boolean result = true;
+        for (int x = 2; x<=sqrt(i); x++) {
+            if ((i % x) == 0) {
+                result = false;
+                break;
+            } else {
+                x++;
+            }
+        }
+        return result;
     }
 
-    static int added() {
-        //add all the elements in the list.  return the sum.  
-        return 0;
+    static int added(List<Integer> numbers) {
+        //add all the elements in the list.  return the sum.
+        int sum = 0;
+        for(int i: numbers){
+            sum += i;
+        }
+        return sum;
     }
 
-    static int subtracted() {
+    static int subtracted(List<Integer> numbers) {
         //subtract all the elements in the list. return the remainder.
-        return 0;
+        int remainder = numbers.get(0);
+        for(int i = 1; i<numbers.size(); i++) {
+            remainder -= numbers.get(i);
+        }
+        return remainder;
     }
 
-    static int multipled() {
+    static BigInteger multiplied(List<Integer> numbers) {
         //multiply all the elements in the list. and return the product.
-        return 0;
+        BigInteger product = BigInteger.valueOf(numbers.get(0));
+        for (int i = 1; i<numbers.size(); i++) {
+            product= product.multiply(BigInteger.valueOf(numbers.get(i)));
+        }
+        return product;
     }
 
-    static int divided() {
+    static double divided(List<Integer> numbers) {
         //multiply all the elements in the list. and return the product.
-        return 0;
+        double product = numbers.get(0);
+        for (int i = 1; i<numbers.size(); i++) {
+            product /= numbers.get(i);
+        }
+        return product;
     }
 
-    static int findMax() {
+    static int findMax(List<Integer> numbers) {
          //return the maximum value in the list.
-        return 0;
+        int maxValue = Integer.MIN_VALUE;
+        for(int i: numbers) {
+            if(maxValue < i) {
+                maxValue = i;
+            }
+        }
+        return maxValue;
     }
 
-    static int findMin() {
+    static int findMin(List<Integer> numbers) {
         //return the minimum value in the list.
-        return 0;
+        int minValue = Integer.MAX_VALUE;
+        for(int i: numbers) {
+            if (minValue > i) {
+                minValue = i;
+            }
+        }
+        return minValue;
     }
 
-    static int compare(int i, int j) {
+    static int compare(List<Integer> numbers) {
         //compare the values stored in the array at index position i and j.  
         //if the value at i is greater, return 1.  if the value at j is greater, return -1.  if the two values are equal, return 0.
-        return 0;
+        int j = 1;
+        int compareValue = 0;
+        for(int i=0; i<numbers.size()-1; i++) {
+            compareValue = Integer.compare(numbers.get(i), numbers.get(j));
+            System.out.println(numbers.get(i) + " compared to " + numbers.get(j) + ": " + compareValue);
+            j++;
+        }
+        return compareValue;
     }
 
-    static int append(int n) {
+    static int change(int n) {
         //add a new value to the values list. return that value after adding it to the list.
-        return 0;
+        ArrayList<Integer> newNums = new ArrayList<Integer>(nums);
+        newNums.add(n);
+        return n;
     }
 
 }
